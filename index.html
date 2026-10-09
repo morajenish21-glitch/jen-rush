@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="JEN RUSH - An action-packed 2D neon arcade browser game created by JEN. Dodge obstacles, collect gold coins, and set the high score!">
+    <title>JEN RUSH | 2D Neon Arcade Game by JEN</title>
+    
+    <!-- Google Fonts for Sci-Fi Neon Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Game Wrapper -->
+    <div id="game-container">
+
+        <!-- Top Header / Bar -->
+        <header id="game-header">
+            <div class="logo-container">
+                <h1 class="logo-text">JEN <span class="highlight">RUSH</span></h1>
+                <span class="version-badge">v2.0 ARCADE</span>
+            </div>
+            <div class="audio-control-container">
+                <button id="sound-btn" class="icon-btn" aria-label="Toggle Sound Effects">
+                    <span id="sound-icon">🔊</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Canvas Container -->
+        <div id="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600" aria-label="JEN RUSH Game Canvas"></canvas>
+
+            <!-- Heads-Up Display (HUD) - Visible during gameplay -->
+            <div id="hud-overlay" class="overlay-screen hidden">
+                <div class="hud-stat" id="hud-score-card">
+                    <span class="hud-label">SCORE</span>
+                    <span id="score-val" class="hud-value">0</span>
+                </div>
+                <div class="hud-stat" id="hud-coin-card">
+                    <span class="hud-label">COINS</span>
+                    <span id="coin-val" class="hud-value">0</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="hud-label">BEST</span>
+                    <span id="best-val" class="hud-value">0</span>
+                </div>
+                <button id="pause-btn" class="hud-btn icon-hud-btn" aria-label="Pause Game">⏸️</button>
+            </div>
+
+            <!-- Start / Title Screen Overlay -->
+            <div id="start-screen" class="overlay-screen center-overlay">
+                <div class="menu-card title-card">
+                    <div class="brand-header">
+                        <span class="glow-tag">NEON ARCADE</span>
+                        <h2 class="title-main">JEN <span class="glow-cyan">RUSH</span></h2>
+                        <p class="subtitle">STEEL YOUR REFLEXES & SURVIVE THE VOID</p>
+                    </div>
+                    
+                    <div class="high-score-badge">
+                        <span class="trophy-icon">🏆</span>
+                        <span class="badge-label">ALL-TIME BEST:</span>
+                        <strong id="start-best-score">0</strong>
+                    </div>
+
+                    <div class="menu-actions">
+                        <button id="play-btn" class="btn btn-primary pulse-anim" tabindex="0">🚀 PLAY NOW</button>
+                        <button id="how-to-btn" class="btn btn-secondary" tabindex="0">❓ HOW TO PLAY</button>
+                    </div>
+
+                    <div class="quick-controls-hint">
+                        <span>Controls: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <strong>Touch Drag</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pause Screen Overlay -->
+            <div id="pause-screen" class="overlay-screen center-overlay hidden">
+                <div class="menu-card pause-card">
+                    <h2 class="menu-title">GAME PAUSED</h2>
+                    <p class="menu-subtitle">Press P or Esc to resume</p>
+                    <div class="menu-actions">
+                        <button id="resume-btn" class="btn btn-primary" tabindex="0">▶️ RESUME</button>
+                        <button id="restart-pause-btn" class="btn btn-secondary" tabindex="0">🔄 RESTART</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Screen Overlay -->
+            <div id="gameover-screen" class="overlay-screen center-overlay hidden">
+                <div class="menu-card gameover-card">
+                    <h2 class="menu-title glow-red">GAME OVER</h2>
+                    <p class="gameover-subtitle">Mission Terminated</p>
+
+                    <div class="final-stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-title">FINAL SCORE</span>
+                            <span id="final-score" class="stat-number">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">COINS COLLECTED</span>
+                            <span id="final-coins" class="stat-number">0</span>
+                        </div>
+                        <div class="stat-box highlight-box">
+                            <span class="stat-title">BEST SCORE</span>
+                            <span id="final-best" class="stat-number">0</span>
+                        </div>
+                    </div>
+
+                    <div id="new-record-banner" class="new-record-anim hidden">
+                        🎉 NEW HIGH SCORE RECORD! 🎉
+                    </div>
+
+                    <div class="menu-actions">
+                        <button id="restart-btn" class="btn btn-primary pulse-anim" tabindex="0">🔄 PLAY AGAIN</button>
+                        <button id="menu-btn" class="btn btn-secondary" tabindex="0">🏠 MAIN MENU</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How To Play Modal Overlay -->
+            <div id="instructions-modal" class="overlay-screen center-overlay hidden">
+                <div class="menu-card instructions-card">
+                    <h2 class="menu-title">HOW TO PLAY</h2>
+                    <div class="instructions-content">
+                        <div class="instruction-item">
+                            <span class="inst-icon">🚀</span>
+                            <div class="inst-text">
+                                <strong>Control Ship</strong>
+                                <p>Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrow Keys</kbd> on Desktop. Drag on Touch screen or use D-Pad.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="inst-icon">☄️</span>
+                            <div class="inst-text">
+                                <strong>Dodge Hazards</strong>
+                                <p>Avoid glowing asteroids and energy mines. Velocity increases over time!</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="inst-icon">🪙</span>
+                            <div class="inst-text">
+                                <strong>Coins & Shields</strong>
+                                <p>Collect Gold Stars (+50 PTS) and Shield Spheres for 6 seconds of invincibility.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="close-instructions-btn" class="btn btn-primary" tabindex="0">GOT IT!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Touch Controls for Mobile Devices -->
+        <div id="touch-controls" class="hidden">
+            <div class="dpad">
+                <button id="btn-up" class="touch-btn dpad-up" aria-label="Move Up">▲</button>
+                <div class="dpad-middle">
+                    <button id="btn-left" class="touch-btn dpad-left" aria-label="Move Left">◀</button>
+                    <button id="btn-down" class="touch-btn dpad-down" aria-label="Move Down">▼</button>
+                    <button id="btn-right" class="touch-btn dpad-right" aria-label="Move Right">▶</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer showing JEN as Creator -->
+        <footer id="game-footer">
+            <p>JEN RUSH &copy; Created with <span class="heart">❤</span> by <strong class="creator-name">JEN</strong></p>
+        </footer>
+
+    </div>
+
+    <!-- Main Game Logic JavaScript -->
+    <script src="game.js"></script>
+</body>
+</html>
